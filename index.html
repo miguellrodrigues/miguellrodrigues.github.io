@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Miguel L. Rodrigues — Computer Vision & Control Systems Engineer</title>
+<meta name="description" content="Miguel L. Rodrigues — mechatronics engineer building industrial computer-vision inspection systems and researching event-triggered control of LPV systems at CEFET-MG." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Expanded:wght@600;700;800&family=Inter:wght@400;450;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f1f2f4;
+    --surface: #fbfbfc;
+    --ink: #16181d;
+    --ink-soft: #4a4f5a;
+    --ink-faint: #878d99;
+    --hair: #d9dbe0;
+    --hair-soft: #e6e8ec;
+    --accent: #2b43e0;
+    --accent-deep: #1d2fb0;
+    --accent-wash: #e9ebfb;
+
+    --display: "Archivo Expanded", "Arial Narrow", sans-serif;
+    --body: "Inter", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, monospace;
+
+    --maxw: 1060px;
+    --gut: clamp(20px, 5vw, 56px);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-deep); }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gut); }
+
+  /* ---- top bar ---- */
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: saturate(140%) blur(8px);
+    background: color-mix(in srgb, var(--paper) 82%, transparent);
+    border-bottom: 1px solid var(--hair-soft);
+  }
+  .topbar .wrap {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px;
+  }
+  .brand {
+    font-family: var(--mono); font-size: 13px; font-weight: 500;
+    letter-spacing: 0.02em; color: var(--ink);
+  }
+  .brand b { color: var(--accent); font-weight: 600; }
+  .topnav { display: flex; gap: 22px; }
+  .topnav a {
+    font-family: var(--mono); font-size: 12.5px; color: var(--ink-soft);
+    letter-spacing: 0.01em;
+  }
+  .topnav a:hover { color: var(--accent); }
+  @media (max-width: 640px) { .topnav { display: none; } }
+
+  /* ---- hero ---- */
+  .hero {
+    position: relative;
+    padding: clamp(56px, 9vw, 104px) 0 clamp(40px, 6vw, 64px);
+    background-image:
+      linear-gradient(var(--hair-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--hair-soft) 1px, transparent 1px);
+    background-size: 34px 34px;
+    background-position: center top;
+  }
+  .hero::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(120% 120% at 18% 0%, transparent 35%, var(--paper) 78%);
+  }
+  .hero .wrap { position: relative; z-index: 1; }
+
+  .eyebrow {
+    font-family: var(--mono); font-size: 12.5px; font-weight: 500;
+    letter-spacing: 0.06em; text-transform: lowercase; color: var(--ink-faint);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .eyebrow::before {
+    content: ""; width: 22px; height: 1px; background: var(--accent);
+    display: inline-block;
+  }
+
+  h1.name {
+    font-family: var(--display); font-weight: 800;
+    font-size: clamp(34px, 7.2vw, 68px);
+    line-height: 0.98; letter-spacing: -0.01em;
+    margin: 20px 0 0; text-transform: uppercase;
+  }
+  .thesis {
+    font-size: clamp(19px, 2.5vw, 25px);
+    line-height: 1.4; font-weight: 450;
+    max-width: 30ch; margin: 24px 0 0; color: var(--ink);
+  }
+  .thesis em { color: var(--accent); font-style: normal; }
+  .sub {
+    margin: 18px 0 0; max-width: 62ch;
+    color: var(--ink-soft); font-size: 16px;
+  }
+
+  /* signature: event-triggered sampling */
+  .signal {
+    margin: 38px 0 0;
+    border: 1px solid var(--hair);
+    background: var(--surface);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .signal-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 9px 14px; border-bottom: 1px solid var(--hair-soft);
+    font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint);
+    letter-spacing: 0.02em;
+  }
+  .signal-head b { color: var(--ink-soft); font-weight: 600; }
+  #sig-count { color: var(--accent); font-weight: 600; }
+  #signal-canvas { display: block; width: 100%; height: 132px; }
+  .signal-foot {
+    padding: 8px 14px; border-top: 1px solid var(--hair-soft);
+    font-family: var(--mono); font-size: 11px; color: var(--ink-faint);
+    line-height: 1.5;
+  }
+
+  .cta { margin: 32px 0 0; display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn {
+    font-family: var(--mono); font-size: 13px; font-weight: 500;
+    padding: 10px 18px; border-radius: 3px; letter-spacing: 0.01em;
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid var(--ink); color: var(--ink); background: transparent;
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .btn:hover { background: var(--ink); color: var(--paper); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.primary:hover { background: var(--accent-deep); border-color: var(--accent-deep); color: #fff; }
+
+  /* ---- divider with event ticks ---- */
+  .rule { padding: clamp(36px, 6vw, 60px) 0 0; }
+  .rule svg { width: 100%; height: 14px; display: block; color: var(--hair); }
+  .rule .ev { color: var(--accent); }
+
+  /* ---- sections ---- */
+  section { padding: clamp(30px, 4vw, 44px) 0; }
+  .sec-label {
+    font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.05em;
+    color: var(--ink-faint); text-transform: lowercase;
+    display: flex; align-items: baseline; gap: 12px; margin-bottom: 28px;
+  }
+  .sec-label .idx { color: var(--accent); font-weight: 600; }
+  .sec-label h2 {
+    font-family: var(--display); font-weight: 700; text-transform: uppercase;
+    font-size: clamp(18px, 2.4vw, 23px); letter-spacing: 0.01em;
+    margin: 0; color: var(--ink); flex: 0 0 auto;
+  }
+  .sec-label .line { flex: 1; height: 1px; background: var(--hair); align-self: center; }
+
+  /* ---- work grid ---- */
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--hair);
+    border-radius: 4px; padding: 22px 22px 20px;
+    display: flex; flex-direction: column;
+    transition: border-color .15s, transform .15s;
+  }
+  .card.flagship { grid-column: 1 / -1; }
+  .card.linked:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .card-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .card h3 {
+    font-family: var(--display); font-weight: 700; font-size: 18px;
+    margin: 0; letter-spacing: 0.005em;
+  }
+  .card .repo { font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; }
+  .card .lead { margin: 9px 0 14px; color: var(--ink-soft); font-size: 15px; }
+  .card ul { margin: 0 0 16px; padding-left: 17px; color: var(--ink); font-size: 14.5px; }
+  .card li { margin: 4px 0; }
+  .card li::marker { color: var(--accent); }
+  .tags { margin-top: auto; display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    font-family: var(--mono); font-size: 11px; color: var(--ink-soft);
+    background: var(--paper); border: 1px solid var(--hair-soft);
+    padding: 3px 8px; border-radius: 2px;
+  }
+  .tag.priv { color: var(--ink-faint); }
+
+  /* ---- publications ---- */
+  .pub { border-top: 1px solid var(--hair-soft); padding: 16px 0; display: grid;
+         grid-template-columns: 1fr auto; gap: 4px 20px; align-items: baseline; }
+  .pub:first-of-type { border-top: 1px solid var(--hair); }
+  .pub .title { font-weight: 500; font-size: 16px; color: var(--ink); }
+  .pub .authors { font-size: 14px; color: var(--ink-soft); grid-column: 1 / 2; }
+  .pub .authors u { text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 2px; }
+  .pub .venue {
+    font-family: var(--mono); font-size: 12px; color: var(--accent);
+    grid-column: 2; grid-row: 1 / span 2; white-space: nowrap; align-self: center;
+  }
+  @media (max-width: 600px) {
+    .pub { grid-template-columns: 1fr; }
+    .pub .venue { grid-column: 1; grid-row: auto; align-self: start; margin-top: 4px; }
+  }
+  .research-note { color: var(--ink-soft); font-size: 15.5px; max-width: 66ch; margin: 0 0 26px; }
+
+  /* ---- stack ---- */
+  .stack { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 36px; }
+  @media (max-width: 680px) { .stack { grid-template-columns: 1fr; } }
+  .stack-row { border-top: 1px solid var(--hair-soft); padding-top: 13px; }
+  .stack-row:nth-child(-n+2) { border-top: 1px solid var(--hair); }
+  .stack-row .k {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.04em;
+    color: var(--ink-faint); text-transform: uppercase; margin-bottom: 7px;
+  }
+  .stack-row .v { font-size: 15px; color: var(--ink); }
+
+  /* ---- experience ---- */
+  .xp { border-left: 1px solid var(--hair); padding-left: 0; }
+  .xp-org { margin-bottom: 26px; }
+  .xp-org > .org-name {
+    font-family: var(--display); font-weight: 700; font-size: 16px;
+    text-transform: uppercase; letter-spacing: 0.01em; margin: 0 0 2px;
+    padding-left: 22px; position: relative;
+  }
+  .xp-org > .org-name::before {
+    content: ""; position: absolute; left: -1px; top: 7px; transform: translateX(-50%);
+    width: 9px; height: 9px; background: var(--accent); border-radius: 50%;
+    border: 2px solid var(--paper);
+  }
+  .xp-org .org-meta { padding-left: 22px; font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint); margin-bottom: 12px; }
+  .role { padding-left: 22px; margin: 0 0 12px; }
+  .role .rt { display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+  .role .r-title { font-weight: 600; font-size: 15px; }
+  .role .r-date { font-family: var(--mono); font-size: 12px; color: var(--ink-faint); white-space: nowrap; }
+  .role .r-desc { font-size: 14.5px; color: var(--ink-soft); margin-top: 2px; }
+
+  /* ---- footer ---- */
+  footer { border-top: 1px solid var(--hair); padding: 40px 0 56px; margin-top: 20px; }
+  .foot-grid { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 24px; }
+  .foot-grid .big {
+    font-family: var(--display); font-weight: 700; text-transform: uppercase;
+    font-size: clamp(20px, 3vw, 30px); letter-spacing: -0.005em; line-height: 1.05;
+  }
+  .foot-links { display: flex; flex-direction: column; gap: 4px; font-family: var(--mono); font-size: 13.5px; }
+  .colophon { margin-top: 30px; font-family: var(--mono); font-size: 11px; color: var(--ink-faint); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <div class="brand">miguel l. rodrigues <b>/</b> cv &amp; control</div>
+    <nav class="topnav">
+      <a href="#work">work</a>
+      <a href="#research">research</a>
+      <a href="#stack">stack</a>
+      <a href="#experience">experience</a>
+      <a href="#contact">contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <div class="hero">
+    <div class="wrap">
+      <div class="eyebrow">computer vision · control systems · industrial ai</div>
+      <h1 class="name">Miguel L.<br>Rodrigues</h1>
+      <p class="thesis">I build computer-vision inspection systems for industry — and research the <em>control theory</em> that runs underneath them.</p>
+      <p class="sub">Mechatronics engineer at Digimet Solutions and M.Sc. candidate in Electrical Engineering at CEFET-MG, working where applied industrial AI meets event-triggered and robust control of LPV systems.</p>
+
+      <div class="signal" aria-hidden="true">
+        <div class="signal-head">
+          <span><b>event-triggered sampling</b> · transmit only when the signal leaves the band</span>
+          <span>transmissions: <span id="sig-count">0</span></span>
+        </div>
+        <canvas id="signal-canvas"></canvas>
+        <div class="signal-foot">the recurring motif on this page. the same idea drives my research: send data only when it carries enough information to be worth the transmission.</div>
+      </div>
+
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/miguellrodrigues" target="_blank" rel="noopener">GitHub ↗</a>
+        <a class="btn" href="https://www.linkedin.com/in/miguellr16/" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a class="btn" href="mailto:miguel.lukas52@gmail.com">Email</a>
+        <a class="btn" href="cv.pdf" target="_blank" rel="noopener">Résumé (PDF)</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- WORK -->
+  <div class="rule wrap"><svg viewBox="0 0 1000 14" preserveAspectRatio="none"><line x1="0" y1="7" x2="1000" y2="7" stroke="currentColor" stroke-width="1"/><line class="ev" x1="120" y1="1" x2="120" y2="13" stroke="currentColor" stroke-width="1.5"/><line class="ev" x1="430" y1="1" x2="430" y2="13" stroke="currentColor" stroke-width="1.5"/><line class="ev" x1="690" y1="1" x2="690" y2="13" stroke="currentColor" stroke-width="1.5"/><line class="ev" x1="880" y1="1" x2="880" y2="13" stroke="currentColor" stroke-width="1.5"/></svg></div>
+  <section id="work" class="wrap">
+    <div class="sec-label"><span class="idx">01</span><h2>Selected work</h2><span class="line"></span></div>
+    <div class="grid">
+
+      <div class="card flagship">
+        <div class="card-top">
+          <h3>Industrial Inspection Systems</h3>
+          <span class="repo">Digimet Solutions · production</span>
+        </div>
+        <p class="lead">Production AI for the metallurgical industry: keypoint-detection and image-segmentation models feeding geometric analysis, served through cloud inference tuned for latency and cost.</p>
+        <ul>
+          <li>End-to-end vision pipeline — preprocessing, model, validation, and post-processing — owned from research to deployment.</li>
+          <li>Serverless inference on AWS Lambda with CloudWatch monitoring and alerting.</li>
+          <li>Inference optimized via ONNX export and INT8 quantization; domain adaptation to close the gap between training data and field imagery.</li>
+          <li>Annotation and dataset infrastructure on EC2 (Label Studio, PostgreSQL, S3).</li>
+        </ul>
+        <div class="tags">
+          <span class="tag">PyTorch</span><span class="tag">OpenCV</span><span class="tag">ONNX</span>
+          <span class="tag">AWS Lambda</span><span class="tag">Docker</span>
+          <span class="tag priv">proprietary — no public repo</span>
+        </div>
+      </div>
+
+      <a class="card linked" href="https://github.com/miguellrodrigues/robotic_tools" target="_blank" rel="noopener">
+        <div class="card-top"><h3>robotic_tools</h3><span class="repo">↗ python</span></div>
+        <p class="lead">Symbolic and numerical analysis of serial manipulators from Denavit–Hartenberg parameters.</p>
+        <ul>
+          <li>Forward &amp; inverse kinematics, position and orientation.</li>
+          <li>Forward dynamics via Euler–Lagrange; Jacobians and inverse velocity kinematics.</li>
+          <li>Gradient-descent and evolutionary IK solvers — plug in any DH table.</li>
+        </ul>
+        <div class="tags"><span class="tag">Python</span><span class="tag">SymPy</span><span class="tag">NumPy</span></div>
+      </a>
+
+      <a class="card linked" href="https://github.com/miguellrodrigues/prometheus" target="_blank" rel="noopener">
+        <div class="card-top"><h3>prometheus</h3><span class="repo">↗ c / esp32</span></div>
+        <p class="lead">Closed-loop temperature controller on ESP32 with MQTT telemetry, built with UFMG's GREA research group.</p>
+        <ul>
+          <li>Discrete PID with anti-windup and output saturation behind a 2nd-order IIR pre-filter.</li>
+          <li>Auto transition from open-loop warm-up to closed-loop near setpoint.</li>
+          <li>Dual-core FreeRTOS — control on core 0, MQTT on core 1; remote setpoint/config, no reflashing.</li>
+        </ul>
+        <div class="tags"><span class="tag">C</span><span class="tag">ESP-IDF</span><span class="tag">FreeRTOS</span><span class="tag">MQTT</span></div>
+      </a>
+
+      <a class="card linked" href="https://github.com/miguellrodrigues/beam_tools" target="_blank" rel="noopener">
+        <div class="card-top"><h3>beam_tools</h3><span class="repo">↗ python</span></div>
+        <p class="lead">Symbolic Euler–Bernoulli beam analysis using Macaulay singularity functions.</p>
+        <ul>
+          <li>Closed-form shear force, bending moment, slope, and deflection.</li>
+          <li>Statically determinate and hyperstatic beams, with automatic compatibility equations.</li>
+          <li>Point, distributed, and triangular loads plus applied moments.</li>
+        </ul>
+        <div class="tags"><span class="tag">Python</span><span class="tag">SymPy</span></div>
+      </a>
+
+      <a class="card linked" href="https://github.com/miguellrodrigues/fpwm-signal-generator" target="_blank" rel="noopener">
+        <div class="card-top"><h3>fpwm-signal-generator</h3><span class="repo">↗ c / esp32</span></div>
+        <p class="lead">Function generator on ESP32 applying digital-systems and power-electronics concepts.</p>
+        <ul>
+          <li>Sine, sawtooth, triangle, and square waveforms via PWM and hardware timers.</li>
+          <li>Frequency error below 1% across the tested range.</li>
+          <li>Buttons and a 16×2 LCD interface on a custom development board.</li>
+        </ul>
+        <div class="tags"><span class="tag">C</span><span class="tag">ESP-IDF</span></div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- RESEARCH -->
+  <div class="rule wrap"><svg viewBox="0 0 1000 14" preserveAspectRatio="none"><line x1="0" y1="7" x2="1000" y2="7" stroke="currentColor" stroke-width="1"/><line class="ev" x1="210" y1="1" x2="210" y2="13" stroke="currentColor" stroke-width="1.5"/><line class="ev" x1="520" y1="1" x2="520" y2="13" stroke="currentColor" stroke-width="1.5"/><line class="ev" x1="780" y1="1" x2="780" y2="13" stroke="currentColor" stroke-width="1.5"/></svg></div>
+  <section id="research" class="wrap">
+    <div class="sec-label"><span class="idx">02</span><h2>Research &amp; publications</h2><span class="line"></span></div>
+    <p class="research-note">My academic work is on the theory and design of <strong>event-triggered control</strong> for uncertain and nonlinear plants — with emphasis on <strong>Linear Parameter-Varying (LPV)</strong> models and robust control under actuator saturation. I work comfortably with Lyapunov stability, LMI-based design, and rigorous proofs, and I review for the same venues I publish in.</p>
+
+    <div class="pub">
+      <span class="title">Co-Design and Evolutionary Optimization of Periodic Event-Triggered Robust Control for LPV Systems</span>
+      <span class="venue">ROCOND 2025</span>
+      <span class="authors">Oliveira, <u>Rodrigues</u>, Guelton, Motchon, Leite</span>
+    </div>
+    <div class="pub">
+      <span class="title">Gerador Dinâmico de Eventos com Tratamento de Ruído para Redução de Transmissões</span>
+      <span class="venue">SBAI 2025</span>
+      <span class="authors"><u>Rodrigues</u>, Silva, Leite</span>
+    </div>
+    <div class="pub">
+      <span class="title">Gerador de Eventos para Minimização de Transmissões em Sistemas LPV Saturantes</span>
+      <span class="venue">CBA 2024</span>
+      <span class="authors"><u>Rodrigues</u>, Silva, Leite</span>
+    </div>
+    <div class="pub">
+      <span class="title">Modelagens e Simulações Computacionais Aplicadas ao Desenvolvimento Remoto de Sistemas Mecatrônicos</span>
+      <span class="venue">CBA 2022</span>
+      <span class="authors">Silva, Alves, <u>Rodrigues</u>, Dâmaso</span>
+    </div>
+  </section>
+
+  <!-- STACK -->
+  <div class="rule wrap"><svg viewBox="0 0 1000 14" preserveAspectRatio="none"><line x1="0" y1="7" x2="1000" y2="7" stroke="currentColor" stroke-width="1"/><line class="ev" x1="160" y1="1" x2="160" y2="13" stroke="currentColor" stroke-width="1.5"/><line class="ev" x1="600" y1="1" x2="600" y2="13" stroke="currentColor" stroke-width="1.5"/></svg></div>
+  <section id="stack" class="wrap">
+    <div class="sec-label"><span class="idx">03</span><h2>Stack</h2><span class="line"></span></div>
+    <div class="stack">
+      <div class="stack-row"><div class="k">Computer vision &amp; AI</div><div class="v">PyTorch · OpenCV · semantic &amp; instance segmentation · keypoint detection · ONNX · model quantization · domain adaptation</div></div>
+      <div class="stack-row"><div class="k">Cloud &amp; infrastructure</div><div class="v">AWS (Lambda serverless inference, EC2, S3) · Docker · CloudWatch monitoring · CI</div></div>
+      <div class="stack-row"><div class="k">Languages</div><div class="v">Python · C · TypeScript</div></div>
+      <div class="stack-row"><div class="k">Control &amp; scientific computing</div><div class="v">LPV systems · event-triggered &amp; robust control · LMIs · Lyapunov stability · NumPy · SciPy · SymPy</div></div>
+      <div class="stack-row"><div class="k">Embedded &amp; hardware</div><div class="v">ESP32 · STM32 · ESP-IDF · FreeRTOS · KiCad · power electronics</div></div>
+      <div class="stack-row"><div class="k">Languages (spoken)</div><div class="v">Portuguese (native) · English (full professional) · French (elementary)</div></div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <div class="rule wrap"><svg viewBox="0 0 1000 14" preserveAspectRatio="none"><line x1="0" y1="7" x2="1000" y2="7" stroke="currentColor" stroke-width="1"/><line class="ev" x1="300" y1="1" x2="300" y2="13" stroke="currentColor" stroke-width="1.5"/><line class="ev" x1="720" y1="1" x2="720" y2="13" stroke="currentColor" stroke-width="1.5"/></svg></div>
+  <section id="experience" class="wrap">
+    <div class="sec-label"><span class="idx">04</span><h2>Experience &amp; education</h2><span class="line"></span></div>
+    <div class="xp">
+
+      <div class="xp-org">
+        <p class="org-name">Digimet Solutions</p>
+        <p class="org-meta">industrial AI · Joinville, SC (remote) · 2024 — present</p>
+        <div class="role">
+          <div class="rt"><span class="r-title">Systems Developer</span><span class="r-date">Feb 2025 — present</span></div>
+          <div class="r-desc">AI for computer-vision tasks (detection, segmentation, geometric analysis); cloud inference optimized for performance, scale, and cost; continuous refactoring and engineering practices.</div>
+        </div>
+        <div class="role">
+          <div class="rt"><span class="r-title">AI R&amp;D Intern</span><span class="r-date">Oct 2024 — Feb 2025</span></div>
+          <div class="r-desc">Built a full image-segmentation pipeline; benchmarked state-of-the-art models for the problem; produced structured technical documentation.</div>
+        </div>
+      </div>
+
+      <div class="xp-org">
+        <p class="org-name">CEFET-MG</p>
+        <p class="org-meta">divinópolis, MG · 2021 — present</p>
+        <div class="role">
+          <div class="rt"><span class="r-title">Teaching Assistant</span><span class="r-date">Mar — Sep 2024</span></div>
+          <div class="r-desc">Signals &amp; Systems and Control Theory.</div>
+        </div>
+        <div class="role">
+          <div class="rt"><span class="r-title">Undergraduate Research</span><span class="r-date">2022 — 2024</span></div>
+          <div class="r-desc">Robust control, linear systems, and event-based control.</div>
+        </div>
+        <div class="role">
+          <div class="rt"><span class="r-title">Undergraduate Research · PET scholarship</span><span class="r-date">2021 — 2022</span></div>
+          <div class="r-desc">Neuro-fuzzy (Takagi–Sugeno) modeling for forecasting; AI-controlled mobile manipulators.</div>
+        </div>
+      </div>
+
+      <div class="xp-org">
+        <p class="org-name">Education</p>
+        <p class="org-meta">CEFET-MG</p>
+        <div class="role">
+          <div class="rt"><span class="r-title">M.Sc., Electrical Engineering</span><span class="r-date">2025 — 2027</span></div>
+          <div class="r-desc">Event-triggered control of LPV systems with actuator saturation.</div>
+        </div>
+        <div class="role">
+          <div class="rt"><span class="r-title">B.Eng., Mechatronics / Control &amp; Automation</span><span class="r-date">2020 — 2025</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="big">Open to roles<br>abroad — let's talk.</div>
+      <div class="foot-links">
+        <a href="mailto:miguel.lukas52@gmail.com">miguel.lukas52@gmail.com →</a>
+        <a href="https://github.com/miguellrodrigues" target="_blank" rel="noopener">github.com/miguellrodrigues →</a>
+        <a href="https://www.linkedin.com/in/miguellr16/" target="_blank" rel="noopener">linkedin.com/in/miguellr16 →</a>
+      </div>
+    </div>
+    <div class="colophon">divinópolis, brazil · built with html + a little js · type: archivo expanded / inter / ibm plex mono</div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var canvas = document.getElementById('signal-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var countEl = document.getElementById('sig-count');
+
+  var css = getComputedStyle(document.documentElement);
+  var INK = (css.getPropertyValue('--ink') || '#16181d').trim();
+  var ACCENT = (css.getPropertyValue('--accent') || '#2b43e0').trim();
+  var HAIR = (css.getPropertyValue('--hair') || '#d9dbe0').trim();
+  var FAINT = (css.getPropertyValue('--ink-faint') || '#878d99').trim();
+
+  var W = 0, H = 0, dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+  var pts = [];          // {x, v, ev}
+  var lastTx = 0;        // last transmitted value, normalized [-1,1]
+  var threshold = 0.30;  // trigger band half-width
+  var count = 0;
+  var speed = 1.4;       // px per frame
+  var spacing = 5;       // px between samples
+  var acc = 0, phase = 0;
+
+  function resize() {
+    var rect = canvas.getBoundingClientRect();
+    W = rect.width; H = rect.height;
+    canvas.width = Math.round(W * dpr);
+    canvas.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function signalAt(t) {
+    // smooth, quasi-random looking signal in [-1, 1]
+    return 0.62 * Math.sin(t * 0.9)
+         + 0.26 * Math.sin(t * 2.3 + 1.1)
+         + 0.12 * Math.sin(t * 4.7 + 0.5);
+  }
+
+  function yOf(v) {
+    var pad = 22;
+    return pad + (1 - (v + 1) / 2) * (H - 2 * pad);
+  }
+
+  function addSample() {
+    phase += 0.085;
+    var v = signalAt(phase);
+    var ev = false;
+    if (Math.abs(v - lastTx) > threshold) {
+      ev = true; lastTx = v; count++;
+      if (countEl) countEl.textContent = count;
+    }
+    pts.push({ x: W, v: v, ev: ev });
+  }
+
+  function seed() {
+    pts = []; count = 0; phase = 0; lastTx = signalAt(0);
+    var n = Math.ceil(W / spacing) + 2;
+    for (var i = 0; i < n; i++) {
+      var x = W - i * spacing;
+      phase += 0.085;
+      var v = signalAt(phase);
+      var ev = false;
+      if (Math.abs(v - lastTx) > threshold) { ev = true; lastTx = v; count++; }
+      pts.unshift({ x: x, v: v, ev: ev });
+    }
+    if (countEl) countEl.textContent = count;
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    // baseline at lastTx band (context for the rule)
+    var bandTop = yOf(lastTx + threshold), bandBot = yOf(lastTx - threshold);
+    ctx.fillStyle = ACCENT + '14';
+    ctx.fillRect(0, bandTop, W, bandBot - bandTop);
+    ctx.strokeStyle = HAIR; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, yOf(lastTx)); ctx.lineTo(W, yOf(lastTx)); ctx.stroke();
+
+    // signal line
+    ctx.beginPath();
+    for (var i = 0; i < pts.length; i++) {
+      var p = pts[i], y = yOf(p.v);
+      if (i === 0) ctx.moveTo(p.x, y); else ctx.lineTo(p.x, y);
+    }
+    ctx.strokeStyle = INK + '80'; ctx.lineWidth = 1.5; ctx.stroke();
+
+    // event ticks + dots
+    for (var j = 0; j < pts.length; j++) {
+      var q = pts[j];
+      if (!q.ev) continue;
+      var qy = yOf(q.v);
+      ctx.strokeStyle = ACCENT + '55'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(q.x, yOf(lastTx)); ctx.lineTo(q.x, qy); ctx.stroke();
+      ctx.fillStyle = ACCENT;
+      ctx.beginPath(); ctx.arc(q.x, qy, 2.6, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+
+  function tick() {
+    acc += speed;
+    while (acc >= spacing) { acc -= spacing; addSample(); }
+    for (var i = 0; i < pts.length; i++) pts[i].x -= speed;
+    while (pts.length && pts[0].x < -spacing) pts.shift();
+    // recompute count from on-screen events so it reflects the visible window
+    draw();
+    raf = requestAnimationFrame(tick);
+  }
+
+  var raf = null;
+  function start() {
+    resize(); seed(); draw();
+    if (!reduce) { cancelAnimationFrame(raf); raf = requestAnimationFrame(tick); }
+  }
+
+  var rt;
+  window.addEventListener('resize', function () {
+    clearTimeout(rt);
+    rt = setTimeout(start, 150);
+  });
+  start();
+})();
+</script>
+</body>
+</html>
