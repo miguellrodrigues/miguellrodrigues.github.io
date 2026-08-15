@@ -3,31 +3,41 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Miguel L. Rodrigues — Computer Vision & Control Systems Engineer</title>
+<title>Miguel L. Rodrigues — Computer Vision &amp; Control Systems Engineer</title>
 <meta name="description" content="Miguel L. Rodrigues — mechatronics engineer building industrial computer-vision inspection systems and researching event-triggered control of LPV systems at CEFET-MG." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Expanded:wght@600;700;800&family=Inter:wght@400;450;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
+  /* ================================================================
+     The page is an axis.
+     One line runs from the hero's signal down to the footer.
+     Sections are its major graduations; themes are transmitted
+     events, and every mark sits ON the line at the height of the
+     thing it names. Nothing floats.
+     ================================================================ */
   :root {
-    --paper: #f1f2f4;
-    --surface: #fbfbfc;
-    --ink: #16181d;
-    --ink-soft: #4a4f5a;
-    --ink-faint: #878d99;
-    --hair: #d9dbe0;
-    --hair-soft: #e6e8ec;
-    --accent: #2b43e0;
-    --accent-deep: #1d2fb0;
-    --accent-wash: #e9ebfb;
+    --paper: #f4f1ec;
+    --surface: #fbf9f6;
+    --ink: #1b1a18;
+    --ink-soft: #4f4a44;
+    --ink-faint: #726a5f;
+    --hair: #ded7cd;
+    --hair-soft: #eae5dd;
+    --accent: #2c6a5d;
+    --accent-deep: #1e4c42;
+    --accent-wash: #e4edea;
 
-    --display: "Archivo Expanded", "Arial Narrow", sans-serif;
-    --body: "Inter", system-ui, sans-serif;
-    --mono: "IBM Plex Mono", ui-monospace, monospace;
+    /* sans = written by a person · mono = read off an instrument */
+    --body: "Nunito", system-ui, sans-serif;
+    --mono: "Fira Mono", ui-monospace, monospace;
 
-    --maxw: 1060px;
+    --maxw: 1000px;
     --gut: clamp(20px, 5vw, 56px);
+    --spine: 72px;   /* distance from the axis to the content column */
+    --node: 38px;    /* diameter of an event marker */
   }
+  @media (max-width: 780px) { :root { --spine: 34px; --node: 30px; } }
 
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -39,454 +49,516 @@
     font-size: 17px;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
   }
   a { color: var(--accent); text-decoration: none; }
   a:hover { color: var(--accent-deep); }
-  :focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
-    border-radius: 2px;
-  }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+  h1, h2, h3, p { margin: 0; }
+  ul { margin: 0; }
 
   .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gut); }
 
-  /* ---- top bar ---- */
+  /* ---------- the axis ---------- */
+  .sheet {
+    position: relative;
+    padding-left: var(--spine);
+    /* starts accent, cools into a hairline: the signal becoming a rule */
+    background: linear-gradient(180deg, var(--accent) 0, var(--hair) 150px) left top / 1px 100% no-repeat;
+  }
+  .sheet > * { position: relative; }
+
+  /* a marker centred on the axis */
+  .node {
+    position: absolute;
+    left: calc(var(--spine) * -1);
+    transform: translateX(-50%);
+    display: grid; place-items: center;
+    pointer-events: none;
+  }
+  /* major graduation: where a section begins */
+  .node.grad {
+    top: 3px; width: 13px; height: 13px;
+    background: var(--accent); border-radius: 50%;
+    box-shadow: 0 0 0 6px var(--paper);
+  }
+  /* an event: the theme's own mark, sitting on the line */
+  .node.event {
+    top: -4px; width: var(--node); height: var(--node);
+    background: var(--paper); border: 1px solid var(--hair); border-radius: 50%;
+  }
+  .node.event svg { width: 21px; height: 21px; color: var(--accent); }
+  /* the axis terminates */
+  .node.end {
+    top: 7px; width: 9px; height: 9px; background: var(--hair);
+    border-radius: 50%; box-shadow: 0 0 0 6px var(--paper);
+  }
+
+  /* ---------- top bar ---------- */
   .topbar {
     position: sticky; top: 0; z-index: 50;
     backdrop-filter: saturate(140%) blur(8px);
-    background: color-mix(in srgb, var(--paper) 82%, transparent);
+    background: color-mix(in srgb, var(--paper) 86%, transparent);
     border-bottom: 1px solid var(--hair-soft);
   }
-  .topbar .wrap {
-    display: flex; align-items: center; justify-content: space-between;
-    height: 60px;
-  }
-  .brand {
-    font-family: var(--mono); font-size: 13px; font-weight: 500;
-    letter-spacing: 0.02em; color: var(--ink);
-  }
-  .brand b { color: var(--accent); font-weight: 600; }
-  .topnav { display: flex; gap: 22px; }
-  .topnav a {
-    font-family: var(--mono); font-size: 12.5px; color: var(--ink-soft);
-    letter-spacing: 0.01em;
-  }
+  .topbar .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .brand { font-family: var(--mono); font-size: 13px; color: var(--ink); }
+  .brand b { color: var(--accent); font-weight: 700; }
+  .topnav { display: flex; gap: 20px; }
+  .topnav a { font-family: var(--mono); font-size: 12.5px; color: var(--ink-soft); }
   .topnav a:hover { color: var(--accent); }
-  @media (max-width: 640px) { .topnav { display: none; } }
+  @media (max-width: 780px) { .topnav { display: none; } }
 
-  /* ---- hero ---- */
-  .hero {
-    position: relative;
-    padding: clamp(56px, 9vw, 104px) 0 clamp(40px, 6vw, 64px);
-    background-image:
-      linear-gradient(var(--hair-soft) 1px, transparent 1px),
-      linear-gradient(90deg, var(--hair-soft) 1px, transparent 1px);
-    background-size: 34px 34px;
-    background-position: center top;
+  /* ---------- hero ---------- */
+  .hero { position: relative; overflow: hidden; padding: clamp(46px, 7vw, 80px) 0 0; }
+  .hero .lens {
+    position: absolute; right: 24px; top: 26px; width: min(44vw, 380px);
+    color: var(--accent); opacity: .07; pointer-events: none;
   }
-  .hero::after {
-    content: ""; position: absolute; inset: 0; pointer-events: none;
-    background: radial-gradient(120% 120% at 18% 0%, transparent 35%, var(--paper) 78%);
-  }
-  .hero .wrap { position: relative; z-index: 1; }
+  .hero .wrap { position: relative; }
 
   .eyebrow {
-    font-family: var(--mono); font-size: 12.5px; font-weight: 500;
-    letter-spacing: 0.06em; text-transform: lowercase; color: var(--ink-faint);
+    font-family: var(--mono); font-size: 12.5px; letter-spacing: .05em; color: var(--ink-faint);
     display: flex; align-items: center; gap: 10px;
   }
-  .eyebrow::before {
-    content: ""; width: 22px; height: 1px; background: var(--accent);
-    display: inline-block;
-  }
+  .eyebrow::before { content: ""; width: 22px; height: 2px; background: var(--accent); border-radius: 1px; }
 
   h1.name {
-    font-family: var(--display); font-weight: 800;
-    font-size: clamp(34px, 7.2vw, 68px);
-    line-height: 0.98; letter-spacing: -0.01em;
-    margin: 20px 0 0; text-transform: uppercase;
+    font-weight: 900; font-size: clamp(38px, 7.4vw, 74px);
+    line-height: .99; letter-spacing: -.024em; margin-top: 16px;
   }
   .thesis {
-    font-size: clamp(19px, 2.5vw, 25px);
-    line-height: 1.4; font-weight: 450;
-    max-width: 30ch; margin: 24px 0 0; color: var(--ink);
+    font-size: clamp(19px, 2.4vw, 24px); line-height: 1.34; font-weight: 500;
+    max-width: 30ch; margin-top: 20px;
   }
-  .thesis em { color: var(--accent); font-style: normal; }
-  .sub {
-    margin: 18px 0 0; max-width: 62ch;
-    color: var(--ink-soft); font-size: 16px;
-  }
+  .thesis em { color: var(--accent); font-style: normal; font-weight: 700; }
+  .sub { margin-top: 15px; max-width: 58ch; color: var(--ink-soft); font-size: 16px; }
+  .sub b { color: var(--ink); font-weight: 700; }
 
-  /* signature: event-triggered sampling */
+  /* the signal the axis grows out of */
   .signal {
-    margin: 38px 0 0;
-    border: 1px solid var(--hair);
-    background: var(--surface);
-    border-radius: 4px;
-    overflow: hidden;
+    margin-top: 30px; border: 1px solid var(--hair); border-bottom: 0;
+    background: var(--surface); border-radius: 8px 8px 0 0; overflow: hidden;
   }
   .signal-head {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 9px 14px; border-bottom: 1px solid var(--hair-soft);
+    display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap;
+    padding: 10px 15px; border-bottom: 1px solid var(--hair-soft);
     font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint);
-    letter-spacing: 0.02em;
   }
-  .signal-head b { color: var(--ink-soft); font-weight: 600; }
-  #sig-count { color: var(--accent); font-weight: 600; }
-  #signal-canvas { display: block; width: 100%; height: 132px; }
+  .signal-head b { color: var(--ink-soft); font-weight: 500; }
+  #sig-count { color: var(--accent); font-weight: 700; }
+  #signal-canvas { display: block; width: 100%; height: 124px; }
   .signal-foot {
-    padding: 8px 14px; border-top: 1px solid var(--hair-soft);
-    font-family: var(--mono); font-size: 11px; color: var(--ink-faint);
-    line-height: 1.5;
+    padding: 9px 15px; border-top: 1px solid var(--hair-soft);
+    font-family: var(--mono); font-size: 11px; color: var(--ink-faint); line-height: 1.5;
   }
 
-  .cta { margin: 32px 0 0; display: flex; flex-wrap: wrap; gap: 12px; }
-  .btn {
-    font-family: var(--mono); font-size: 13px; font-weight: 500;
-    padding: 10px 18px; border-radius: 3px; letter-spacing: 0.01em;
-    display: inline-flex; align-items: center; gap: 8px;
-    border: 1px solid var(--ink); color: var(--ink); background: transparent;
-    transition: background .15s, color .15s, border-color .15s;
+  /* ---------- sections on the axis ---------- */
+  .sec { padding: 44px 0 6px; }
+  .sec:first-child { padding-top: 32px; }
+  .sec-head { position: relative; }
+  .sec-head .kicker {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--ink-faint); display: block; margin-bottom: 2px;
   }
-  .btn:hover { background: var(--ink); color: var(--paper); }
-  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .btn.primary:hover { background: var(--accent-deep); border-color: var(--accent-deep); color: #fff; }
+  .sec-head h2 { font-weight: 800; font-size: clamp(21px, 2.6vw, 27px); letter-spacing: -.015em; }
+  .sec-note { color: var(--ink-soft); font-size: 15.5px; max-width: 60ch; margin-top: 8px; }
+  .sec-note strong { font-weight: 700; color: var(--ink); }
 
-  /* ---- divider with event ticks ---- */
-  .rule { padding: clamp(36px, 6vw, 60px) 0 0; }
-  .rule svg { width: 100%; height: 14px; display: block; color: var(--hair); }
-  .rule .ev { color: var(--accent); }
+  /* ---------- a theme: one transmitted event ---------- */
+  .theme { position: relative; padding: 28px 0 2px; }
+  .theme-k {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--ink-faint); margin-bottom: 12px;
+    display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+  }
+  .theme-k i { font-style: normal; color: var(--accent); }
+  .theme-lead { color: var(--ink-soft); font-size: 15px; max-width: 62ch; margin: -4px 0 14px; }
 
-  /* ---- sections ---- */
-  section { padding: clamp(30px, 4vw, 44px) 0; }
-  .sec-label {
-    font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.05em;
-    color: var(--ink-faint); text-transform: lowercase;
-    display: flex; align-items: baseline; gap: 12px; margin-bottom: 28px;
-  }
-  .sec-label .idx { color: var(--accent); font-weight: 600; }
-  .sec-label h2 {
-    font-family: var(--display); font-weight: 700; text-transform: uppercase;
-    font-size: clamp(18px, 2.4vw, 23px); letter-spacing: 0.01em;
-    margin: 0; color: var(--ink); flex: 0 0 auto;
-  }
-  .sec-label .line { flex: 1; height: 1px; background: var(--hair); align-self: center; }
-
-  /* ---- work grid ---- */
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
-
-  .card {
-    background: var(--surface); border: 1px solid var(--hair);
-    border-radius: 4px; padding: 22px 22px 20px;
-    display: flex; flex-direction: column;
-    transition: border-color .15s, transform .15s;
-  }
-  .card.flagship { grid-column: 1 / -1; }
-  .card.linked:hover { border-color: var(--accent); transform: translateY(-2px); }
-  .card-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
-  .card h3 {
-    font-family: var(--display); font-weight: 700; font-size: 18px;
-    margin: 0; letter-spacing: 0.005em;
-  }
-  .card .repo { font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; }
-  .card .lead { margin: 9px 0 14px; color: var(--ink-soft); font-size: 15px; }
-  .card ul { margin: 0 0 16px; padding-left: 17px; color: var(--ink); font-size: 14.5px; }
-  .card li { margin: 4px 0; }
-  .card li::marker { color: var(--accent); }
-  .tags { margin-top: auto; display: flex; flex-wrap: wrap; gap: 6px; }
-  .tag {
-    font-family: var(--mono); font-size: 11px; color: var(--ink-soft);
-    background: var(--paper); border: 1px solid var(--hair-soft);
-    padding: 3px 8px; border-radius: 2px;
-  }
-  .tag.priv { color: var(--ink-faint); }
-
-  /* ---- publications ---- */
-  .pub { border-top: 1px solid var(--hair-soft); padding: 16px 0; display: grid;
-         grid-template-columns: 1fr auto; gap: 4px 20px; align-items: baseline; }
-  .pub:first-of-type { border-top: 1px solid var(--hair); }
-  .pub .title { font-weight: 500; font-size: 16px; color: var(--ink); }
+  /* ---------- publications ---------- */
+  .pub { display: grid; grid-template-columns: 1fr auto; gap: 3px 20px; align-items: baseline; padding: 11px 0; }
+  .pub + .pub { border-top: 1px dotted var(--hair); }
+  .pub .title { font-weight: 600; font-size: 16px; color: var(--ink); line-height: 1.4; }
+  a.pub .title { color: var(--accent-deep); }
+  a.pub:hover .title { text-decoration: underline; text-underline-offset: 3px; }
   .pub .authors { font-size: 14px; color: var(--ink-soft); grid-column: 1 / 2; }
-  .pub .authors u { text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 2px; }
+  .pub .authors u { text-decoration-color: var(--accent); text-underline-offset: 2px; }
   .pub .venue {
     font-family: var(--mono); font-size: 12px; color: var(--accent);
     grid-column: 2; grid-row: 1 / span 2; white-space: nowrap; align-self: center;
   }
-  @media (max-width: 600px) {
+  @media (max-width: 620px) {
     .pub { grid-template-columns: 1fr; }
-    .pub .venue { grid-column: 1; grid-row: auto; align-self: start; margin-top: 4px; }
+    .pub .venue { grid-column: 1; grid-row: auto; margin-top: 4px; }
   }
-  .research-note { color: var(--ink-soft); font-size: 15.5px; max-width: 66ch; margin: 0 0 26px; }
 
-  /* ---- stack ---- */
-  .stack { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 36px; }
-  @media (max-width: 680px) { .stack { grid-template-columns: 1fr; } }
-  .stack-row { border-top: 1px solid var(--hair-soft); padding-top: 13px; }
+  /* ---------- cards ---------- */
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 820px) { .cards { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--surface); border: 1px solid var(--hair); border-radius: 10px;
+    padding: 19px 19px 17px; display: flex; flex-direction: column;
+    transition: border-color .15s, transform .15s, box-shadow .15s;
+  }
+  .card.wide { grid-column: 1 / -1; }
+  .card.linked:hover {
+    border-color: var(--accent); transform: translateY(-2px);
+    box-shadow: 0 6px 20px -12px rgba(28, 60, 52, .45);
+  }
+  .card-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .card h3 { font-weight: 800; font-size: 18px; letter-spacing: -.005em; }
+  .card .repo { font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint); white-space: nowrap; }
+  .card .lead { margin: 7px 0 11px; color: var(--ink-soft); font-size: 15px; }
+  .card ul { margin-bottom: 15px; padding-left: 17px; font-size: 14.5px; }
+  .card li { margin: 3px 0; }
+  .card li::marker { color: var(--accent); }
+  .tags { margin-top: auto; display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    font-family: var(--mono); font-size: 11px; color: var(--ink-soft);
+    background: var(--accent-wash); padding: 3px 9px; border-radius: 999px;
+  }
+  .tag.priv { color: var(--ink-faint); background: transparent; border: 1px solid var(--hair); }
+
+  /* ---------- stack ---------- */
+  .stack { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 34px; }
+  @media (max-width: 700px) { .stack { grid-template-columns: 1fr; } }
+  .stack-row { border-top: 1px solid var(--hair-soft); padding-top: 12px; }
   .stack-row:nth-child(-n+2) { border-top: 1px solid var(--hair); }
   .stack-row .k {
-    font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.04em;
-    color: var(--ink-faint); text-transform: uppercase; margin-bottom: 7px;
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: .04em;
+    color: var(--ink-faint); text-transform: uppercase; margin-bottom: 6px;
   }
-  .stack-row .v { font-size: 15px; color: var(--ink); }
+  .stack-row .v { font-size: 15px; }
 
-  /* ---- experience ---- */
-  .xp { border-left: 1px solid var(--hair); padding-left: 0; }
-  .xp-org { margin-bottom: 26px; }
-  .xp-org > .org-name {
-    font-family: var(--display); font-weight: 700; font-size: 16px;
-    text-transform: uppercase; letter-spacing: 0.01em; margin: 0 0 2px;
-    padding-left: 22px; position: relative;
-  }
-  .xp-org > .org-name::before {
-    content: ""; position: absolute; left: -1px; top: 7px; transform: translateX(-50%);
-    width: 9px; height: 9px; background: var(--accent); border-radius: 50%;
-    border: 2px solid var(--paper);
-  }
-  .xp-org .org-meta { padding-left: 22px; font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint); margin-bottom: 12px; }
-  .role { padding-left: 22px; margin: 0 0 12px; }
+  /* ---------- record ---------- */
+  .org { margin-bottom: 22px; }
+  .org-name { font-weight: 800; font-size: 15px; text-transform: uppercase; letter-spacing: .01em; }
+  .org-meta { font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint); margin-bottom: 10px; }
+  .role { margin-bottom: 10px; }
   .role .rt { display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
-  .role .r-title { font-weight: 600; font-size: 15px; }
+  .role .r-title { font-weight: 700; font-size: 15px; }
   .role .r-date { font-family: var(--mono); font-size: 12px; color: var(--ink-faint); white-space: nowrap; }
-  .role .r-desc { font-size: 14.5px; color: var(--ink-soft); margin-top: 2px; }
+  .role .r-desc { font-size: 14.5px; color: var(--ink-soft); }
 
-  /* ---- footer ---- */
-  footer { border-top: 1px solid var(--hair); padding: 40px 0 56px; margin-top: 20px; }
+  /* ---------- contact: the axis ends ---------- */
+  .foot { padding: 46px 0 64px; }
+  .foot-grid { position: relative; }
+  /* the axis stops at the terminal marker instead of running off the page */
+  .foot-grid::before {
+    content: ""; position: absolute; left: calc(var(--spine) * -1); top: 16px;
+    transform: translateX(-50%); width: 3px; height: 600px; background: var(--paper);
+  }
   .foot-grid { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 24px; }
-  .foot-grid .big {
-    font-family: var(--display); font-weight: 700; text-transform: uppercase;
-    font-size: clamp(20px, 3vw, 30px); letter-spacing: -0.005em; line-height: 1.05;
-  }
+  .foot-grid .big { font-weight: 800; font-size: clamp(21px, 3vw, 30px); letter-spacing: -.02em; line-height: 1.1; }
   .foot-links { display: flex; flex-direction: column; gap: 4px; font-family: var(--mono); font-size: 13.5px; }
-  .colophon { margin-top: 30px; font-family: var(--mono); font-size: 11px; color: var(--ink-faint); }
+  .colophon { margin-top: 28px; font-family: var(--mono); font-size: 11px; color: var(--ink-faint); }
 
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 </style>
 </head>
 <body>
 
+<!-- every mark on this page is drawn from here -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <g id="i-lens" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round">
+      <circle cx="12" cy="12" r="9.2"/><circle cx="12" cy="12" r="5.3"/><circle cx="12" cy="12" r="1.7"/>
+      <path d="M12 2.8v2.6M12 18.6v2.6M2.8 12h2.6M18.6 12h2.6M5.5 5.5l1.8 1.8M16.7 16.7l1.8 1.8M18.5 5.5l-1.8 1.8M7.3 16.7l-1.8 1.8"/>
+    </g>
+    <g id="i-event" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M2 19h20" opacity=".4"/>
+      <polyline points="2,15 5.5,6.5 9,18.5 12.5,8 16,16.5 19,10 22,13.5"/>
+      <path d="M5.5 19V6.5M12.5 19V8M19 19v-9" opacity=".4"/>
+      <circle cx="5.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/>
+      <circle cx="12.5" cy="8" r="1.5" fill="currentColor" stroke="none"/>
+      <circle cx="19" cy="10" r="1.5" fill="currentColor" stroke="none"/>
+    </g>
+    <g id="i-monitor" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2.4" y="3.8" width="19.2" height="13.2" rx="1.6"/>
+      <path d="M12 17v3.2M8.8 20.2h6.4"/>
+      <polyline points="6,12.4 8.6,8.4 11.2,13.8 13.8,9.2 16.4,12.6 18.2,11"/>
+    </g>
+    <g id="i-robot" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4.2 20.4h8.4M8.4 20.4V12l7-4.2M15.4 7.8l3.6 1.4"/>
+      <circle cx="8.4" cy="20.4" r="1.7" fill="#f4f1ec"/>
+      <circle cx="8.4" cy="12" r="1.7" fill="#f4f1ec"/>
+      <circle cx="15.4" cy="7.8" r="1.7" fill="#f4f1ec"/>
+    </g>
+    <g id="i-chip" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="6" y="6" width="12" height="12" rx="1.4"/>
+      <rect x="9.6" y="9.6" width="4.8" height="4.8" rx=".8"/>
+      <path d="M9 6V2.8M12 6V2.8M15 6V2.8M9 18v3.2M12 18v3.2M15 18v3.2M6 9H2.8M6 12H2.8M6 15H2.8M18 9h3.2M18 12h3.2M18 15h3.2"/>
+    </g>
+  </defs>
+</svg>
+
 <header class="topbar">
   <div class="wrap">
-    <div class="brand">miguel l. rodrigues <b>/</b> cv &amp; control</div>
+    <div class="brand">miguel l. rodrigues <b>/</b> vision &amp; control</div>
     <nav class="topnav">
-      <a href="#work">work</a>
+      <a href="#practice">practice</a>
       <a href="#research">research</a>
+      <a href="#projects">projects</a>
       <a href="#stack">stack</a>
-      <a href="#experience">experience</a>
+      <a href="#record">record</a>
       <a href="#contact">contact</a>
     </nav>
   </div>
 </header>
 
-<main>
-  <!-- HERO -->
-  <div class="hero">
-    <div class="wrap">
-      <div class="eyebrow">computer vision · control systems · industrial ai</div>
-      <h1 class="name">Miguel L.<br>Rodrigues</h1>
-      <p class="thesis">I build computer-vision inspection systems for industry — and research the <em>control theory</em> that runs underneath them.</p>
-      <p class="sub">Mechatronics engineer at Digimet Solutions and M.Sc. candidate in Electrical Engineering at CEFET-MG, working where applied industrial AI meets event-triggered and robust control of LPV systems.</p>
-
-      <div class="signal" aria-hidden="true">
-        <div class="signal-head">
-          <span><b>event-triggered sampling</b> · transmit only when the signal leaves the band</span>
-          <span>transmissions: <span id="sig-count">0</span></span>
-        </div>
-        <canvas id="signal-canvas"></canvas>
-        <div class="signal-foot">the recurring motif on this page. the same idea drives my research: send data only when it carries enough information to be worth the transmission.</div>
-      </div>
-
-      <div class="cta">
-        <a class="btn primary" href="https://github.com/miguellrodrigues" target="_blank" rel="noopener">GitHub ↗</a>
-        <a class="btn" href="https://www.linkedin.com/in/miguellr16/" target="_blank" rel="noopener">LinkedIn ↗</a>
-        <a class="btn" href="mailto:miguel.lukas52@gmail.com">Email</a>
-        <a class="btn" href="cv.pdf" target="_blank" rel="noopener">Résumé (PDF)</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- WORK -->
-  <div class="rule wrap"><svg viewBox="0 0 1000 14" preserveAspectRatio="none"><line x1="0" y1="7" x2="1000" y2="7" stroke="currentColor" stroke-width="1"/><line class="ev" x1="120" y1="1" x2="120" y2="13" stroke="currentColor" stroke-width="1.5"/><line class="ev" x1="430" y1="1" x2="430" y2="13" stroke="currentColor" stroke-width="1.5"/><line class="ev" x1="690" y1="1" x2="690" y2="13" stroke="currentColor" stroke-width="1.5"/><line class="ev" x1="880" y1="1" x2="880" y2="13" stroke="currentColor" stroke-width="1.5"/></svg></div>
-  <section id="work" class="wrap">
-    <div class="sec-label"><span class="idx">01</span><h2>Selected work</h2><span class="line"></span></div>
-    <div class="grid">
-
-      <div class="card flagship">
-        <div class="card-top">
-          <h3>Industrial Inspection Systems</h3>
-          <span class="repo">Digimet Solutions · production</span>
-        </div>
-        <p class="lead">Production AI for the metallurgical industry: keypoint-detection and image-segmentation models feeding geometric analysis, served through cloud inference tuned for latency and cost.</p>
-        <ul>
-          <li>End-to-end vision pipeline — preprocessing, model, validation, and post-processing — owned from research to deployment.</li>
-          <li>Serverless inference on AWS Lambda with CloudWatch monitoring and alerting.</li>
-          <li>Inference optimized via ONNX export and INT8 quantization; domain adaptation to close the gap between training data and field imagery.</li>
-          <li>Annotation and dataset infrastructure on EC2 (Label Studio, PostgreSQL, S3).</li>
-        </ul>
-        <div class="tags">
-          <span class="tag">PyTorch</span><span class="tag">OpenCV</span><span class="tag">ONNX</span>
-          <span class="tag">AWS Lambda</span><span class="tag">Docker</span>
-          <span class="tag priv">proprietary — no public repo</span>
-        </div>
-      </div>
-
-      <a class="card linked" href="https://github.com/miguellrodrigues/robotic_tools" target="_blank" rel="noopener">
-        <div class="card-top"><h3>robotic_tools</h3><span class="repo">↗ python</span></div>
-        <p class="lead">Symbolic and numerical analysis of serial manipulators from Denavit–Hartenberg parameters.</p>
-        <ul>
-          <li>Forward &amp; inverse kinematics, position and orientation.</li>
-          <li>Forward dynamics via Euler–Lagrange; Jacobians and inverse velocity kinematics.</li>
-          <li>Gradient-descent and evolutionary IK solvers — plug in any DH table.</li>
-        </ul>
-        <div class="tags"><span class="tag">Python</span><span class="tag">SymPy</span><span class="tag">NumPy</span></div>
-      </a>
-
-      <a class="card linked" href="https://github.com/miguellrodrigues/prometheus" target="_blank" rel="noopener">
-        <div class="card-top"><h3>prometheus</h3><span class="repo">↗ c / esp32</span></div>
-        <p class="lead">Closed-loop temperature controller on ESP32 with MQTT telemetry, built with UFMG's GREA research group.</p>
-        <ul>
-          <li>Discrete PID with anti-windup and output saturation behind a 2nd-order IIR pre-filter.</li>
-          <li>Auto transition from open-loop warm-up to closed-loop near setpoint.</li>
-          <li>Dual-core FreeRTOS — control on core 0, MQTT on core 1; remote setpoint/config, no reflashing.</li>
-        </ul>
-        <div class="tags"><span class="tag">C</span><span class="tag">ESP-IDF</span><span class="tag">FreeRTOS</span><span class="tag">MQTT</span></div>
-      </a>
-
-      <a class="card linked" href="https://github.com/miguellrodrigues/beam_tools" target="_blank" rel="noopener">
-        <div class="card-top"><h3>beam_tools</h3><span class="repo">↗ python</span></div>
-        <p class="lead">Symbolic Euler–Bernoulli beam analysis using Macaulay singularity functions.</p>
-        <ul>
-          <li>Closed-form shear force, bending moment, slope, and deflection.</li>
-          <li>Statically determinate and hyperstatic beams, with automatic compatibility equations.</li>
-          <li>Point, distributed, and triangular loads plus applied moments.</li>
-        </ul>
-        <div class="tags"><span class="tag">Python</span><span class="tag">SymPy</span></div>
-      </a>
-
-      <a class="card linked" href="https://github.com/miguellrodrigues/fpwm-signal-generator" target="_blank" rel="noopener">
-        <div class="card-top"><h3>fpwm-signal-generator</h3><span class="repo">↗ c / esp32</span></div>
-        <p class="lead">Function generator on ESP32 applying digital-systems and power-electronics concepts.</p>
-        <ul>
-          <li>Sine, sawtooth, triangle, and square waveforms via PWM and hardware timers.</li>
-          <li>Frequency error below 1% across the tested range.</li>
-          <li>Buttons and a 16×2 LCD interface on a custom development board.</li>
-        </ul>
-        <div class="tags"><span class="tag">C</span><span class="tag">ESP-IDF</span></div>
-      </a>
-
-    </div>
-  </section>
-
-  <!-- RESEARCH -->
-  <div class="rule wrap"><svg viewBox="0 0 1000 14" preserveAspectRatio="none"><line x1="0" y1="7" x2="1000" y2="7" stroke="currentColor" stroke-width="1"/><line class="ev" x1="210" y1="1" x2="210" y2="13" stroke="currentColor" stroke-width="1.5"/><line class="ev" x1="520" y1="1" x2="520" y2="13" stroke="currentColor" stroke-width="1.5"/><line class="ev" x1="780" y1="1" x2="780" y2="13" stroke="currentColor" stroke-width="1.5"/></svg></div>
-  <section id="research" class="wrap">
-    <div class="sec-label"><span class="idx">02</span><h2>Research &amp; publications</h2><span class="line"></span></div>
-    <p class="research-note">My academic work is on the theory and design of <strong>event-triggered control</strong> for uncertain and nonlinear plants — with emphasis on <strong>Linear Parameter-Varying (LPV)</strong> models and robust control under actuator saturation. I work comfortably with Lyapunov stability, LMI-based design, and rigorous proofs, and I review for the same venues I publish in.</p>
-
-    <div class="pub">
-      <span class="title">Co-Design and Evolutionary Optimization of Periodic Event-Triggered Robust Control for LPV Systems</span>
-      <span class="venue">ROCOND 2025</span>
-      <span class="authors">Oliveira, <u>Rodrigues</u>, Guelton, Motchon, Leite</span>
-    </div>
-    <div class="pub">
-      <span class="title">Gerador Dinâmico de Eventos com Tratamento de Ruído para Redução de Transmissões</span>
-      <span class="venue">SBAI 2025</span>
-      <span class="authors"><u>Rodrigues</u>, Silva, Leite</span>
-    </div>
-    <div class="pub">
-      <span class="title">Gerador de Eventos para Minimização de Transmissões em Sistemas LPV Saturantes</span>
-      <span class="venue">CBA 2024</span>
-      <span class="authors"><u>Rodrigues</u>, Silva, Leite</span>
-    </div>
-    <div class="pub">
-      <span class="title">Modelagens e Simulações Computacionais Aplicadas ao Desenvolvimento Remoto de Sistemas Mecatrônicos</span>
-      <span class="venue">CBA 2022</span>
-      <span class="authors">Silva, Alves, <u>Rodrigues</u>, Dâmaso</span>
-    </div>
-  </section>
-
-  <!-- STACK -->
-  <div class="rule wrap"><svg viewBox="0 0 1000 14" preserveAspectRatio="none"><line x1="0" y1="7" x2="1000" y2="7" stroke="currentColor" stroke-width="1"/><line class="ev" x1="160" y1="1" x2="160" y2="13" stroke="currentColor" stroke-width="1.5"/><line class="ev" x1="600" y1="1" x2="600" y2="13" stroke="currentColor" stroke-width="1.5"/></svg></div>
-  <section id="stack" class="wrap">
-    <div class="sec-label"><span class="idx">03</span><h2>Stack</h2><span class="line"></span></div>
-    <div class="stack">
-      <div class="stack-row"><div class="k">Computer vision &amp; AI</div><div class="v">PyTorch · OpenCV · semantic &amp; instance segmentation · keypoint detection · ONNX · model quantization · domain adaptation</div></div>
-      <div class="stack-row"><div class="k">Cloud &amp; infrastructure</div><div class="v">AWS (Lambda serverless inference, EC2, S3) · Docker · CloudWatch monitoring · CI</div></div>
-      <div class="stack-row"><div class="k">Languages</div><div class="v">Python · C · TypeScript</div></div>
-      <div class="stack-row"><div class="k">Control &amp; scientific computing</div><div class="v">LPV systems · event-triggered &amp; robust control · LMIs · Lyapunov stability · NumPy · SciPy · SymPy</div></div>
-      <div class="stack-row"><div class="k">Embedded &amp; hardware</div><div class="v">ESP32 · STM32 · ESP-IDF · FreeRTOS · KiCad · power electronics</div></div>
-      <div class="stack-row"><div class="k">Languages (spoken)</div><div class="v">Portuguese (native) · English (full professional) · French (elementary)</div></div>
-    </div>
-  </section>
-
-  <!-- EXPERIENCE -->
-  <div class="rule wrap"><svg viewBox="0 0 1000 14" preserveAspectRatio="none"><line x1="0" y1="7" x2="1000" y2="7" stroke="currentColor" stroke-width="1"/><line class="ev" x1="300" y1="1" x2="300" y2="13" stroke="currentColor" stroke-width="1.5"/><line class="ev" x1="720" y1="1" x2="720" y2="13" stroke="currentColor" stroke-width="1.5"/></svg></div>
-  <section id="experience" class="wrap">
-    <div class="sec-label"><span class="idx">04</span><h2>Experience &amp; education</h2><span class="line"></span></div>
-    <div class="xp">
-
-      <div class="xp-org">
-        <p class="org-name">Digimet Solutions</p>
-        <p class="org-meta">industrial AI · Joinville, SC (remote) · 2024 — present</p>
-        <div class="role">
-          <div class="rt"><span class="r-title">Systems Developer</span><span class="r-date">Feb 2025 — present</span></div>
-          <div class="r-desc">AI for computer-vision tasks (detection, segmentation, geometric analysis); cloud inference optimized for performance, scale, and cost; continuous refactoring and engineering practices.</div>
-        </div>
-        <div class="role">
-          <div class="rt"><span class="r-title">AI R&amp;D Intern</span><span class="r-date">Oct 2024 — Feb 2025</span></div>
-          <div class="r-desc">Built a full image-segmentation pipeline; benchmarked state-of-the-art models for the problem; produced structured technical documentation.</div>
-        </div>
-      </div>
-
-      <div class="xp-org">
-        <p class="org-name">CEFET-MG</p>
-        <p class="org-meta">divinópolis, MG · 2021 — present</p>
-        <div class="role">
-          <div class="rt"><span class="r-title">Teaching Assistant</span><span class="r-date">Mar — Sep 2024</span></div>
-          <div class="r-desc">Signals &amp; Systems and Control Theory.</div>
-        </div>
-        <div class="role">
-          <div class="rt"><span class="r-title">Undergraduate Research</span><span class="r-date">2022 — 2024</span></div>
-          <div class="r-desc">Robust control, linear systems, and event-based control.</div>
-        </div>
-        <div class="role">
-          <div class="rt"><span class="r-title">Undergraduate Research · PET scholarship</span><span class="r-date">2021 — 2022</span></div>
-          <div class="r-desc">Neuro-fuzzy (Takagi–Sugeno) modeling for forecasting; AI-controlled mobile manipulators.</div>
-        </div>
-      </div>
-
-      <div class="xp-org">
-        <p class="org-name">Education</p>
-        <p class="org-meta">CEFET-MG</p>
-        <div class="role">
-          <div class="rt"><span class="r-title">M.Sc., Electrical Engineering</span><span class="r-date">2025 — 2027</span></div>
-          <div class="r-desc">Event-triggered control of LPV systems with actuator saturation.</div>
-        </div>
-        <div class="role">
-          <div class="rt"><span class="r-title">B.Eng., Mechatronics / Control &amp; Automation</span><span class="r-date">2020 — 2025</span></div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-</main>
-
-<footer id="contact">
+<!-- HERO — the signal the rest of the page hangs from -->
+<div class="hero">
+  <svg class="lens" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-lens"/></svg>
   <div class="wrap">
-    <div class="foot-grid">
-      <div class="big">Open to roles<br>abroad — let's talk.</div>
-      <div class="foot-links">
-        <a href="mailto:miguel.lukas52@gmail.com">miguel.lukas52@gmail.com →</a>
-        <a href="https://github.com/miguellrodrigues" target="_blank" rel="noopener">github.com/miguellrodrigues →</a>
-        <a href="https://www.linkedin.com/in/miguellr16/" target="_blank" rel="noopener">linkedin.com/in/miguellr16 →</a>
+    <p class="eyebrow">computer vision · control systems · industrial ai</p>
+    <h1 class="name">Miguel L.<br>Rodrigues</h1>
+    <p class="thesis">I build computer-vision inspection systems for industry — and research the <em>control theory</em> underneath them.</p>
+    <p class="sub">Mechatronics engineer at <b>Digimet Solutions</b>, M.Sc. candidate at <b>CEFET-MG</b>. Production deep learning, owned end to end. Research on event generators for saturated LPV systems — LMI synthesis, Lyapunov certificates.</p>
+
+    <div class="signal" aria-hidden="true">
+      <div class="signal-head">
+        <span><b>event-triggered sampling</b> · transmit only outside the band</span>
+        <span>transmissions: <span id="sig-count">0</span></span>
       </div>
+      <canvas id="signal-canvas"></canvas>
+      <div class="signal-foot">this line carries on down the page. every mark on it is one transmission — a piece of work worth sending.</div>
     </div>
-    <div class="colophon">divinópolis, brazil · built with html + a little js · type: archivo expanded / inter / ibm plex mono</div>
   </div>
-</footer>
+</div>
+
+<main class="wrap">
+  <div class="sheet">
+
+    <!-- PRACTICE -->
+    <section class="sec" id="practice">
+      <div class="sec-head">
+        <span class="node grad"></span>
+        <span class="kicker">in production</span>
+        <h2>Practice</h2>
+        <p class="sec-note">Applied deep learning for the metallurgical industry — work that ships, runs unattended, and has to hold up on field imagery.</p>
+      </div>
+
+      <div class="theme">
+        <span class="node event"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-lens"/></svg></span>
+        <p class="theme-k">Industrial computer vision <i>Digimet Solutions</i></p>
+        <div class="cards">
+          <div class="card wide">
+            <div class="card-top">
+              <h3>Weld-Bead Inspection</h3>
+              <span class="repo">production</span>
+            </div>
+            <p class="lead">Segmentation and keypoint models feeding geometric measurement of bead profile.</p>
+            <ul>
+              <li>Owned end to end — annotation, training, validation, post-processing, deployment.</li>
+              <li>Serverless inference on AWS Lambda · CloudWatch monitoring and alerting.</li>
+              <li>ONNX export and INT8 quantization for latency and cost.</li>
+              <li>Domain adaptation: annotated imagery → field imagery.</li>
+              <li>Annotation stack on EC2 — Label Studio · PostgreSQL · S3.</li>
+            </ul>
+            <div class="tags">
+              <span class="tag">PyTorch</span><span class="tag">OpenCV</span><span class="tag">ONNX</span>
+              <span class="tag">AWS Lambda</span><span class="tag">Docker</span>
+              <span class="tag priv">proprietary — no public repo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESEARCH -->
+    <section class="sec" id="research">
+      <div class="sec-head">
+        <span class="node grad"></span>
+        <span class="kicker">peer reviewed</span>
+        <h2>Research</h2>
+        <p class="sec-note"><strong>Event-triggered control</strong> for uncertain plants — LPV models, actuator saturation, LMI synthesis, Lyapunov stability. Reviewer for the venues I publish in. Titles link to the PDFs.</p>
+      </div>
+
+      <div class="theme">
+        <span class="node event"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-event"/></svg></span>
+        <p class="theme-k">Event-triggered &amp; robust control <i>3 papers</i></p>
+        <p class="theme-lead">Static and dynamic event generators that cut transmissions in networked loops while certifying stability and performance.</p>
+        <a class="pub" href="papers/ROCOND25_Robust_and_ETM.pdf" target="_blank" rel="noopener">
+          <span class="title">Co-Design and Evolutionary Optimization of Periodic Event-Triggered Robust Control for LPV Systems</span>
+          <span class="venue">ROCOND 2025</span>
+          <span class="authors">Oliveira, <u>Rodrigues</u>, Guelton, Motchon, Leite</span>
+        </a>
+        <a class="pub" href="papers/SBAI_SBSE_ETC_MIGUEL.pdf" target="_blank" rel="noopener">
+          <span class="title">Gerador Dinâmico de Eventos com Tratamento de Ruído para Redução de Transmissões</span>
+          <span class="venue">SBAI 2025</span>
+          <span class="authors"><u>Rodrigues</u>, Silva, Leite</span>
+        </a>
+        <a class="pub" href="papers/CBA_ETC_MIGUEL.pdf" target="_blank" rel="noopener">
+          <span class="title">Gerador de Eventos para Minimização de Transmissões em Sistemas LPV Saturantes</span>
+          <span class="venue">CBA 2024</span>
+          <span class="authors"><u>Rodrigues</u>, Silva, Leite</span>
+        </a>
+      </div>
+
+      <div class="theme">
+        <span class="node event"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-monitor"/></svg></span>
+        <p class="theme-k">Mechatronics &amp; simulation <i>1 paper</i></p>
+        <div class="pub">
+          <span class="title">Modelagens e Simulações Computacionais Aplicadas ao Desenvolvimento Remoto de Sistemas Mecatrônicos</span>
+          <span class="venue">CBA 2022</span>
+          <span class="authors">Silva, Alves, <u>Rodrigues</u>, Dâmaso</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section class="sec" id="projects">
+      <div class="sec-head">
+        <span class="node grad"></span>
+        <span class="kicker">open source</span>
+        <h2>Projects</h2>
+        <p class="sec-note">Tools built on the same thematic axes as the research. Every card links to its repository.</p>
+      </div>
+
+      <div class="theme">
+        <span class="node event"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-robot"/></svg></span>
+        <p class="theme-k">Robotics &amp; mechanics <i>2 repos</i></p>
+        <div class="cards">
+          <a class="card linked" href="https://github.com/miguellrodrigues/robotic_tools" target="_blank" rel="noopener">
+            <div class="card-top"><h3>robotic_tools</h3><span class="repo">↗ python</span></div>
+            <p class="lead">Serial manipulators from Denavit–Hartenberg parameters.</p>
+            <ul>
+              <li>Forward and inverse kinematics — position and orientation.</li>
+              <li>Euler–Lagrange dynamics · Jacobians · inverse velocity.</li>
+              <li>Gradient-descent and evolutionary IK solvers, any DH table.</li>
+            </ul>
+            <div class="tags"><span class="tag">Python</span><span class="tag">SymPy</span><span class="tag">NumPy</span></div>
+          </a>
+          <a class="card linked" href="https://github.com/miguellrodrigues/beam_tools" target="_blank" rel="noopener">
+            <div class="card-top"><h3>beam_tools</h3><span class="repo">↗ python</span></div>
+            <p class="lead">Symbolic Euler–Bernoulli beams via Macaulay singularity functions.</p>
+            <ul>
+              <li>Closed-form shear, moment, slope, and deflection.</li>
+              <li>Determinate and hyperstatic, with automatic compatibility equations.</li>
+              <li>Point, distributed, and triangular loads plus applied moments.</li>
+            </ul>
+            <div class="tags"><span class="tag">Python</span><span class="tag">SymPy</span></div>
+          </a>
+        </div>
+      </div>
+
+      <div class="theme">
+        <span class="node event"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chip"/></svg></span>
+        <p class="theme-k">Embedded control <i>2 repos</i></p>
+        <div class="cards">
+          <a class="card linked" href="https://github.com/miguellrodrigues/prometheus" target="_blank" rel="noopener">
+            <div class="card-top"><h3>prometheus</h3><span class="repo">↗ c / esp32</span></div>
+            <p class="lead">ESP32 temperature loop with MQTT telemetry — with UFMG's GREA group.</p>
+            <ul>
+              <li>Discrete PID, anti-windup and saturation behind a 2nd-order IIR pre-filter.</li>
+              <li>Automatic open-loop → closed-loop handover near setpoint.</li>
+              <li>Dual-core FreeRTOS: control on core 0, MQTT on core 1. Remote tuning, no reflashing.</li>
+            </ul>
+            <div class="tags"><span class="tag">C</span><span class="tag">ESP-IDF</span><span class="tag">FreeRTOS</span><span class="tag">MQTT</span></div>
+          </a>
+          <a class="card linked" href="https://github.com/miguellrodrigues/fpwm-signal-generator" target="_blank" rel="noopener">
+            <div class="card-top"><h3>fpwm-signal-generator</h3><span class="repo">↗ c / esp32</span></div>
+            <p class="lead">ESP32 function generator — digital systems and power electronics.</p>
+            <ul>
+              <li>Sine, sawtooth, triangle, and square via PWM and hardware timers.</li>
+              <li>Frequency error below 1% across the tested range.</li>
+              <li>Buttons and a 16×2 LCD on a custom development board.</li>
+            </ul>
+            <div class="tags"><span class="tag">C</span><span class="tag">ESP-IDF</span></div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- STACK -->
+    <section class="sec" id="stack">
+      <div class="sec-head">
+        <span class="node grad"></span>
+        <span class="kicker">tools</span>
+        <h2>Stack</h2>
+      </div>
+      <div class="theme">
+        <div class="stack">
+          <div class="stack-row"><div class="k">Vision &amp; AI</div><div class="v">PyTorch · OpenCV · semantic &amp; instance segmentation · keypoint detection · ONNX · INT8 quantization · domain adaptation</div></div>
+          <div class="stack-row"><div class="k">Cloud &amp; infrastructure</div><div class="v">AWS (Lambda, EC2, S3) · Docker · CloudWatch · CI</div></div>
+          <div class="stack-row"><div class="k">Control &amp; scientific computing</div><div class="v">LPV systems · event-triggered &amp; robust control · LMIs · Lyapunov stability · NumPy · SciPy · SymPy</div></div>
+          <div class="stack-row"><div class="k">Embedded &amp; hardware</div><div class="v">ESP32 · STM32 · ESP-IDF · FreeRTOS · KiCad · power electronics</div></div>
+          <div class="stack-row"><div class="k">Programming</div><div class="v">Python · C · TypeScript</div></div>
+          <div class="stack-row"><div class="k">Spoken languages</div><div class="v">Portuguese (native) · English (full professional) · French (elementary)</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RECORD -->
+    <section class="sec" id="record">
+      <div class="sec-head">
+        <span class="node grad"></span>
+        <span class="kicker">where and when</span>
+        <h2>Record</h2>
+      </div>
+      <div class="theme">
+        <div class="org">
+          <p class="org-name">Digimet Solutions</p>
+          <p class="org-meta">industrial AI · Joinville, SC (remote)</p>
+          <div class="role">
+            <div class="rt"><span class="r-title">Systems Developer</span><span class="r-date">Feb 2025 — present</span></div>
+            <p class="r-desc">Detection, segmentation, and geometric analysis in production; cloud inference tuned for latency, scale, and cost.</p>
+          </div>
+          <div class="role">
+            <div class="rt"><span class="r-title">AI R&amp;D Intern</span><span class="r-date">Oct 2024 — Feb 2025</span></div>
+            <p class="r-desc">First end-to-end segmentation pipeline; benchmarks of state-of-the-art architectures; technical documentation.</p>
+          </div>
+        </div>
+
+        <div class="org">
+          <p class="org-name">CEFET-MG</p>
+          <p class="org-meta">divinópolis, MG</p>
+          <div class="role">
+            <div class="rt"><span class="r-title">Teaching Assistant</span><span class="r-date">Mar — Sep 2024</span></div>
+            <p class="r-desc">Signals &amp; Systems · Control Theory.</p>
+          </div>
+          <div class="role">
+            <div class="rt"><span class="r-title">Undergraduate Researcher</span><span class="r-date">2022 — 2024</span></div>
+            <p class="r-desc">Controller synthesis and Lyapunov analysis; robust and event-triggered control.</p>
+          </div>
+          <div class="role">
+            <div class="rt"><span class="r-title">Undergraduate Researcher · PET</span><span class="r-date">2021 — 2022</span></div>
+            <p class="r-desc">Takagi–Sugeno neuro-fuzzy modeling; AI-based control of mobile manipulators.</p>
+          </div>
+        </div>
+
+        <div class="org">
+          <p class="org-name">Education</p>
+          <p class="org-meta">CEFET-MG</p>
+          <div class="role">
+            <div class="rt"><span class="r-title">M.Sc., Electrical Engineering</span><span class="r-date">2025 — 2027</span></div>
+            <p class="r-desc">Event-triggered control of LPV systems with actuator saturation.</p>
+          </div>
+          <div class="role">
+            <div class="rt"><span class="r-title">B.Eng., Mechatronics Engineering</span><span class="r-date">2020 — 2025</span></div>
+            <p class="r-desc">Control, automation, robotics, embedded systems.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT — the axis ends -->
+    <div class="foot" id="contact">
+      <div class="foot-grid">
+        <span class="node end"></span>
+        <p class="big">Open to roles<br>abroad — let's talk.</p>
+        <div class="foot-links">
+          <a href="mailto:miguel.lukas52@gmail.com">miguel.lukas52@gmail.com →</a>
+          <a href="cv.pdf" target="_blank" rel="noopener">résumé (pdf) →</a>
+          <a href="https://github.com/miguellrodrigues" target="_blank" rel="noopener">github.com/miguellrodrigues →</a>
+          <a href="https://www.linkedin.com/in/miguellr16/" target="_blank" rel="noopener">linkedin.com/in/miguellr16 →</a>
+        </div>
+      </div>
+      <p class="colophon">divinópolis, brazil · html + a little js · type: nunito / fira mono</p>
+    </div>
+
+  </div>
+</main>
 
 <script>
 (function () {
@@ -497,10 +569,9 @@
   var countEl = document.getElementById('sig-count');
 
   var css = getComputedStyle(document.documentElement);
-  var INK = (css.getPropertyValue('--ink') || '#16181d').trim();
-  var ACCENT = (css.getPropertyValue('--accent') || '#2b43e0').trim();
-  var HAIR = (css.getPropertyValue('--hair') || '#d9dbe0').trim();
-  var FAINT = (css.getPropertyValue('--ink-faint') || '#878d99').trim();
+  var INK = (css.getPropertyValue('--ink') || '#1b1a18').trim();
+  var ACCENT = (css.getPropertyValue('--accent') || '#2c6a5d').trim();
+  var HAIR = (css.getPropertyValue('--hair') || '#ded7cd').trim();
 
   var W = 0, H = 0, dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
   var pts = [];          // {x, v, ev}
@@ -559,7 +630,7 @@
   function draw() {
     ctx.clearRect(0, 0, W, H);
 
-    // baseline at lastTx band (context for the rule)
+    // trigger band around the last transmitted value
     var bandTop = yOf(lastTx + threshold), bandBot = yOf(lastTx - threshold);
     ctx.fillStyle = ACCENT + '14';
     ctx.fillRect(0, bandTop, W, bandBot - bandTop);
@@ -591,7 +662,6 @@
     while (acc >= spacing) { acc -= spacing; addSample(); }
     for (var i = 0; i < pts.length; i++) pts[i].x -= speed;
     while (pts.length && pts[0].x < -spacing) pts.shift();
-    // recompute count from on-screen events so it reflects the visible window
     draw();
     raf = requestAnimationFrame(tick);
   }
